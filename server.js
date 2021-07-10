@@ -19,7 +19,7 @@ app.use('/peerjs', peerServer);
 app.set('view engine','ejs');
 app.use(express.static('public'));
 
-app.get('/Connect',(req,res) =>{
+app.get('/',(req,res) =>{
     res.render("index.ejs");
 })
 
