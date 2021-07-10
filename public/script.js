@@ -38,7 +38,7 @@ myPeer.on('call', call => {
 
     if(!call_list[call.peer]){
       console.log("incoming");
-      addVideoStream( userVideoStream)
+      addVideoStream( userVideoStream,call.peer)
     }
     call_list[call.peer] = call;
     
@@ -65,7 +65,19 @@ socket.on('user-connected', userId => {
 
 
 socket.on('user-disconnected', userId => {
-  if (peers[userId]) peers[userId].close();
+  // if (call_list[userId]){
+  //    call_list[userId].close();}
+
+  for(let i =0; i<videoGrid.childNodes.length ; i++){
+    const tempId = videoGrid.childNodes[i].id;
+
+    if(tempId === userId){
+      videoGrid.removeChild(videoGrid.childNodes[i]);
+      break;
+    }
+
+  }
+
 })
 
 myPeer.on('open', id => {
@@ -75,7 +87,7 @@ myPeer.on('open', id => {
     audio: true
   }).then(stream => {
     myVideoStream = stream;
-    addVideoStream( stream) 
+    addVideoStream( stream, id) 
     socket.emit('join-room', ROOM_ID, id)
   })
 
@@ -90,13 +102,13 @@ function connectToNewUser(userId) {
 
     if(!call_list[call.peer]){
       console.log("user");
-      addVideoStream( userVideoStream)
+      addVideoStream( userVideoStream, call.peer)
     }
     call_list[call.peer] = call;
     
   })
 
-  peers[userId] = call
+ // peers[userId] = call
   
   // call.on('close', () => {
   //   video.remove()
@@ -105,8 +117,9 @@ function connectToNewUser(userId) {
   
 }
 
-function addVideoStream( stream) {
+function addVideoStream( stream, userId) {
   const video = document.createElement('video')
+  video.setAttribute('id',userId);
   video.srcObject = stream
   video.addEventListener('loadedmetadata', () => {
     video.play()
@@ -179,7 +192,7 @@ const setPlayVideo = () => {
 
 document.getElementById('leave_meeting').onclick = function (){
   console.log("left meering");
-  location.href = "/connect";
+  location.href = "/";
 }
 
 
