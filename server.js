@@ -20,7 +20,7 @@ app.set('view engine','ejs');
 app.use(express.static('public'));
 
 app.get('/',(req,res) =>{
-    res.render("index.html");
+    res.render("index");
 })
 
 app.get('/room',  (req,res) =>{
@@ -34,9 +34,19 @@ app.get('/room',  (req,res) =>{
   app.get('/room/:id', (req,res)=>{
    const id =req.params.id;
   // console.log(req.params);
-  res.render('room',{roomId:id}); 
+  res.render('room.ejs',{roomId:id}); 
   //  res.render('room', { roomId: req.params.id })
   })
+
+  app.use(express.urlencoded({ extended: true }));
+
+  app.post('/room', (req,res) =>{
+    console.log(req.body);
+    let link = req.body.link;
+    res.redirect(`${link}`)
+  })
+
+
 
 io.on('connection', socket =>{
     socket.on('join-room',(roomId, userId) =>{

@@ -1,6 +1,3 @@
-
-//new code
-
 let call_list = [];
 
 const socket = io('/')
@@ -8,37 +5,18 @@ const videoGrid = document.getElementById('video-grid')
 
 let username = prompt("Enter your name: ")
 
-const myPeer = new Peer()//undefined // , {
-//   path: '/peerjs',
-//   host: '/',
-//   port: '443'
-// }
-//)
+const myPeer = new Peer();
 let myVideoStream;
-//const myVideo = document.createElement('video')
-//myVideo.id = "my_video";
-
-//myVideo.muted = true;
-//let peers = {}
-// navigator.mediaDevices.getUserMedia({
-//   video: true,
-//   audio: true
-// }).then(stream => {
-//   myVideoStream = stream;
-//   addVideoStream(myVideo, stream)
- 
-// })
 
 myPeer.on('call', call => {
+  
   call.answer(myVideoStream)
   const video = document.createElement('video')
-  //myVideo.id = "my_video";
   call.on('stream', userVideoStream => {
-    //console.log("incoming call")
-
+  
     if(!call_list[call.peer]){
       console.log("incoming");
-      addVideoStream( userVideoStream,call.peer)
+      addVideoStream( userVideoStream,call.peer, "otherVideo")
     }
     call_list[call.peer] = call;
     
@@ -46,7 +24,7 @@ myPeer.on('call', call => {
 })
 
 socket.on('user-connected', userId => {
-  connectToNewUser(userId) //, stream))\
+  connectToNewUser(userId);
 })
 
   // input value
@@ -59,15 +37,14 @@ socket.on('user-connected', userId => {
     }
   });
   socket.on("createMessage", (message,username) => {
-    $("ul").append(`<li class="message"><b>${username}</b><br/>${message}</li>`);
+    var d =new Date();    
+    var s= String(d); 
+    $("ul").append(`<li class="message"><div id="message"><span id="username"><b>${username}</b></span> <span class='time'> on ${s.substring(0,21)}</span><br/>${message}</div></li>`);
     scrollToBottom()
   })
 
 
 socket.on('user-disconnected', userId => {
-  // if (call_list[userId]){
-  //    call_list[userId].close();}
-
   for(let i =0; i<videoGrid.childNodes.length ; i++){
     const tempId = videoGrid.childNodes[i].id;
 
@@ -75,9 +52,7 @@ socket.on('user-disconnected', userId => {
       videoGrid.removeChild(videoGrid.childNodes[i]);
       break;
     }
-
   }
-
 })
 
 myPeer.on('open', id => {
@@ -87,53 +62,44 @@ myPeer.on('open', id => {
     audio: true
   }).then(stream => {
     myVideoStream = stream;
-    addVideoStream( stream, id) 
+    addVideoStream( stream, id, "myVideo") 
     socket.emit('join-room', ROOM_ID, id)
-  })
-
- 
+  }) 
 })
 
 function connectToNewUser(userId) {
   const call = myPeer.call(userId, myVideoStream)
   const video = document.createElement('video')
- // myVideo.id = "my_video";
   call.on('stream', userVideoStream => {
 
     if(!call_list[call.peer]){
       console.log("user");
-      addVideoStream( userVideoStream, call.peer)
+      addVideoStream( userVideoStream, call.peer, "otherVideo")
     }
     call_list[call.peer] = call;
     
   })
-
- // peers[userId] = call
-  
-  // call.on('close', () => {
-  //   video.remove()
-  // })
-
-  
 }
 
-function addVideoStream( stream, userId) {
+function addVideoStream( stream, userId, status) {
   const video = document.createElement('video')
+ 
+  if(status === "myVideo")
+  video.muted=true; // mute self video
+
   video.setAttribute('id',userId);
   video.srcObject = stream
   video.addEventListener('loadedmetadata', () => {
     video.play()
   })
+
   videoGrid.append(video)
 }
-
-
 
 const scrollToBottom = () => {
   var d = $('.main__chat_window');
   d.scrollTop(d.prop("scrollHeight"));
 }
-
 
 const muteUnmute = () => {
   const enabled = myVideoStream.getAudioTracks()[0].enabled;
@@ -147,7 +113,6 @@ const muteUnmute = () => {
 }
 
 const playStop = () => {
- // console.log('object')
   let enabled = myVideoStream.getVideoTracks()[0].enabled;
   if (enabled) {
     myVideoStream.getVideoTracks()[0].enabled = false;
@@ -196,5 +161,13 @@ document.getElementById('leave_meeting').onclick = function (){
 }
 
 
-
+const copy = () => {
+  var inputc = document.body.appendChild(document.createElement("input"));
+  inputc.value = window.location.href;
+  inputc.focus();
+  inputc.select();
+  document.execCommand('copy');
+  inputc.parentNode.removeChild(inputc);
+  alert("URL Copied.");
+}
 

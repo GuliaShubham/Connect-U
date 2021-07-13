@@ -5,13 +5,52 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connet U</title>
-   
+   <link rel="stylesheet" href="style1.css">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Connect you App</h1>
+    <div class="header">
+    <h1>Connect U App</h1>
+    <img id="icon" src="data:image/png;base64,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" alt="">
+    <p>Stay Home, safe and connected all the time.</p>
+    </div>
+
+<div class="left">
+    <h2>Join Meeting</h2>
+    <form action="/room" method="POST">
+    <label for="link">Enter meeting link:</label>
+    <input name="link" id="link" type="text" placeholder="Enter Link" required="true">
+    <label for="email">E-mail:</label>
+    <input type="email" required="true" placeholder="Enter your E-mail">
+    <button id="join_meeting" type="submit">Join </button>
+    </form>
+</div>
+
+    <div class = "right">
+        <h2>Create Meeting</h2>
     <form action="/room" method="GET">
-    <button type="submit">Create a new room </button>
+        
+        <label for="email">E-mail:</label>
+        <input id='email' type="email" required="true" placeholder="Enter your E-mail">
+    <button id='new_room' type="submit">Create a new room </button>
 </form>
-   
+   </div>
+
+<div class="footer">
+    <div class="l_foot">
+<h3>Made under Microsoft Engage Mentorship 2021</h3>
+<img src="https://microsoft.acehacker.com/engage2021/img/demo-content/images/logo-white.png" alt="Microsoft">
+</div>
+
+<div class="r_foot">
+    <h3>Made with <span style="color: red;">❤ </span>by Shubham Gulia</h3>
+    <a href="https://github.com/GuliaShubham"><img id="github" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToEMH8khIIZuJqCgm0b6tmEjR7CeUjdMVSrQ&usqp=CAU" alt="Github"></a>
+
+</div>
+
+</div>
+
 </body>
 </html>
